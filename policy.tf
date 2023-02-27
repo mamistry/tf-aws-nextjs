@@ -34,12 +34,12 @@ data aws_iam_policy_document lambda_s3_sqs {
 }
 
 resource "aws_iam_role" "default_lambda_exec" {
-  name = "${terraform.workspace}-LambdaRscExecRole"
+  name = "${var.environment}-LambdaRscExecRole"
   assume_role_policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
 resource aws_iam_policy lambda_s3_sqs {
-  name        = "${terraform.workspace}-lambda-s3-sqs-permissions"
+  name        = "${var.environment}-lambda-s3-sqs-permissions"
   description = "Contains S3 and SQS permissions for lambda"
   policy      = data.aws_iam_policy_document.lambda_s3_sqs.json
 }

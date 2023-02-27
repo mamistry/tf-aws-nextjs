@@ -5,7 +5,7 @@
 locals {
   # A wildcard domain(ex: *.example.com) has to be added when using atomic deployments:
   aliases = [var.custom_domain, "*.${var.custom_domain}"]
-  domain = "${terraform.workspace}.${var.custom_domain}"
+  domain = "${var.environment}.${var.custom_domain}"
 }
 
 ########
@@ -20,7 +20,7 @@ module "lambdas" {
   name = each.value["name"]
   output_path = "${each.value["name"]}-lambda.zip"
   source_dir  = each.value["source_dir"]
-  function_name = "${terraform.workspace}_${each.value["name"]}_path"
+  function_name = "${var.environment}_${each.value["name"]}_path"
   s3_bucket_arn = var.s3_bucket_arn
   s3_bucket_id = var.lambda_bucket_id
   s3_object_key = "${each.value["name"]}_path.zip"
@@ -244,7 +244,7 @@ resource "aws_s3_bucket_object" "dist" {
 }
 
 resource "aws_sqs_queue" "sqs_default_queue" {
-  name                  = "${terraform.workspace}-regeneration-nextjs.fifo"
+  name                  = "${var.environment}-regeneration-nextjs.fifo"
   fifo_queue            = true
   deduplication_scope   = "messageGroup"
   fifo_throughput_limit = "perMessageGroupId"

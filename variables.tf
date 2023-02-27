@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "Name of the environement eg. dev or int"
+  type = string
+}
+
 variable "custom_domain" {
   description = "Your custom domain"
   type        = string

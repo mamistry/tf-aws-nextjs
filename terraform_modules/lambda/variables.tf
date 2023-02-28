@@ -36,3 +36,9 @@ variable "name" {
 variable "sqs_default_queue_arn" {
   type = string
 }
+
+variable "env_vars" {
+  description = "Environment variables for the function"
+  type        = map(string)
+  default     = null
+}

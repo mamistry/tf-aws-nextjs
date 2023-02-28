@@ -46,6 +46,7 @@ resource "aws_cloudfront_distribution" "cdn" {
 
   enabled             = true
 
+
   ordered_cache_behavior {
     path_pattern           = "_next/static/*"
     target_origin_id       = local.domain

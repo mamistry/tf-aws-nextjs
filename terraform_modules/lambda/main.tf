@@ -21,6 +21,13 @@ resource "aws_lambda_function" "default_path" {
   runtime = "nodejs14.x"
   handler = "index.handler"
 
+  dynamic "environment" {
+    for_each = var.env_vars != null ? [0] : []
+    content {
+      variables = var.env_vars
+    }
+  }
+
   source_code_hash = data.archive_file.default_lambda.output_base64sha256
 
   role = var.role_arn

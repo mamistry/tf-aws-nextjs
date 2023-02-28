@@ -14,10 +14,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set output
         id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+        run: | 
+          echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+          echo "message=$(git tag -l --format="%(contents:body)" $GITHUB_REF_NAME)" >> $GITHUB_OUTPUT
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           automatic_release_tag: "${{ steps.vars.outputs.tag }}"
-          title: ${{ github.event.head_commit.message }}
+          title: ${{ steps.vars.outputs.message }}

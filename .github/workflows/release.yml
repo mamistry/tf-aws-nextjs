@@ -20,3 +20,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           automatic_release_tag: "${{ steps.vars.outputs.tag }}"
+          title: ${{ github.event.head_commit.message }}

@@ -3,6 +3,11 @@ variable "environment" {
   type = string
 }
 
+variable "service_name" {
+  description = "Name of the Service"
+  type        = string
+}
+
 variable "custom_domain" {
   description = "Your custom domain"
   type        = string
@@ -19,21 +24,6 @@ variable "lambda_array" {
     name = string
     source_dir = string
   }))
-}
-
-variable "lambda_bucket_id" {
-  description = "lambda bucket id"
-  type = string
-}
-
-variable "s3_bucket_id" {
-  description = "s3 bucket id"
-  type = string
-}
-
-variable "s3_files" {
-  description = "source directory files"
-  type = any
 }
 
 variable "s3_bucket_regional_domain_name" {

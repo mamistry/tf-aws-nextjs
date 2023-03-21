@@ -12,6 +12,20 @@ locals {
 # lambdas
 ########
 
+resource "aws_s3_bucket" "lambda_bucket" {
+  bucket        = "${var.environment}-lambda-bucket-${var.service_name}"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 module "lambdas" {
   for_each = var.lambda_array
 
@@ -22,7 +36,7 @@ module "lambdas" {
   source_dir  = each.value["source_dir"]
   function_name = "${var.environment}_${each.value["name"]}_path"
   s3_bucket_arn = var.s3_bucket_arn
-  s3_bucket_id = var.lambda_bucket_id
+  s3_bucket_id = aws_s3_bucket.lambda_bucket.id
   s3_object_key = "${each.value["name"]}_path.zip"
   role_arn = aws_iam_role.default_lambda_exec.arn
   sqs_default_queue_arn = aws_sqs_queue.sqs_default_queue.arn
@@ -229,19 +243,6 @@ resource "aws_cloudfront_distribution" "cdn" {
     acm_certificate_arn = var.certificate_arn
     ssl_support_method = "sni-only"
   }
-}
-
-resource "aws_s3_bucket_object" "dist" {
-  for_each = var.s3_files
-
-  bucket = var.s3_bucket_id
-  key          = each.key
-  content_type = each.value.content_type
-  source  = each.value.source_path
-  content = each.value.content
-  cache_control = "public, max-age=0, s-maxage=2678400, must-revalidate"
-  # etag makes the file update when it changes; see https://stackoverflow.com/questions/56107258/terraform-upload-file-to-s3-on-every-apply
-  etag = each.value.digests.md5
 }
 
 resource "aws_sqs_queue" "sqs_default_queue" {
